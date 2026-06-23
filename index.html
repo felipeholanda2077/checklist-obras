@@ -76,31 +76,34 @@
   .prog-bar-fill.done { background: linear-gradient(90deg, var(--green-bright), #2ab52a); }
 
   /* Filtros */
-  .filtros { display: flex; gap: 8px; margin-top: 14px; flex-wrap: wrap; }
+  .filtros { display: flex; gap: 8px; margin-top: 14px; flex-wrap: wrap; align-items: center; }
   .btn-filtro {
-    padding: 5px 14px; border-radius: 20px; font-size: 12px;
+    padding: 6px 14px; border-radius: 20px; font-size: 12px;
     border: 2px solid var(--border); background: transparent;
     color: var(--green-light); cursor: pointer;
     transition: all 0.2s; font-family: 'Source Sans 3', sans-serif;
+    white-space: nowrap; touch-action: manipulation;
   }
   .btn-filtro.ativo {
     border-color: var(--green-light); background: #2a5a2a; color: var(--text);
   }
+  .btn-filtro:active { opacity: 0.7; }
 
   /* Botões extras */
   .btn-clear {
-    padding: 5px 14px; border-radius: 20px; font-size: 12px;
+    padding: 6px 14px; border-radius: 20px; font-size: 12px;
     border: 2px solid #6b2a2a; background: transparent;
     color: #df7a7a; cursor: pointer;
     transition: all 0.2s; font-family: 'Source Sans 3', sans-serif;
-    margin-left: auto;
+    margin-left: auto; white-space: nowrap; touch-action: manipulation;
   }
   .btn-clear:hover { background: #3a1a1a; }
   .btn-print {
-    padding: 5px 14px; border-radius: 20px; font-size: 12px;
+    padding: 6px 14px; border-radius: 20px; font-size: 12px;
     border: 2px solid var(--border); background: transparent;
     color: var(--green-light); cursor: pointer;
     transition: all 0.2s; font-family: 'Source Sans 3', sans-serif;
+    white-space: nowrap; touch-action: manipulation;
   }
   .btn-print:hover { background: var(--green-faint); }
 
@@ -248,22 +251,134 @@
   }
   #save-toast.show { opacity: 1; }
 
+  /* ── RESPONSIVO ── */
+  @media (max-width: 600px) {
+    #header { padding: 16px 12px 12px; }
+    .header-icon { font-size: 24px; }
+    .filtros { gap: 6px; margin-top: 10px; }
+    .btn-filtro, .btn-print, .btn-clear { padding: 5px 10px; font-size: 11px; }
+    .btn-clear { margin-left: 0; }
+    #main { padding: 14px 10px 60px; }
+    .fase-header { padding: 12px 12px; gap: 8px; }
+    .fase-header .icon { font-size: 18px; }
+    .fase-nome { font-size: 13px !important; }
+    .fase-actions { gap: 4px; }
+    .btn-all, .btn-reset { padding: 3px 7px; font-size: 9px; }
+    .etapa-header { padding: 9px 12px; gap: 8px; }
+    .etapa-items { padding: 4px 0 8px 32px; }
+    .item-row { padding: 5px 10px 5px 0; gap: 8px; }
+    .item-label { font-size: 12px; }
+    #footer { padding: 0 12px 60px; font-size: 11px; }
+  }
+
+  @media (max-width: 400px) {
+    .filtros { gap: 4px; }
+    .btn-filtro, .btn-print, .btn-clear { padding: 4px 8px; font-size: 10px; }
+    .fase-nome { font-size: 12px !important; }
+    .etapa-items { padding-left: 24px; }
+  }
+
   /* ── PRINT ── */
   @media print {
-    body { background: #fff; color: #111; }
-    #header { position: static; background: #fff; border-bottom: 2px solid #333; }
-    .btn-filtro, .btn-clear, .btn-print, .fase-actions { display: none !important; }
-    .fase-card { box-shadow: none; border: 1px solid #ccc !important; page-break-inside: avoid; }
-    .fase-body { display: block !important; }
-    .etapa-items { display: block !important; }
-    .item-box { border-color: #333 !important; }
-    .item-box.checked { background: #333 !important; }
-    .item-label { color: #111 !important; }
-    .item-label.checked { color: #666 !important; }
-    .fase-nome, .etapa-nome { color: #111 !important; }
-    .header-title { color: #111 !important; }
-    .header-label { color: #444 !important; }
-    #save-toast { display: none; }
+    * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+
+    html, body {
+      background: #fff !important;
+      color: #111 !important;
+      font-size: 11pt;
+    }
+
+    #header {
+      position: static !important;
+      background: #f8f8f8 !important;
+      border-bottom: 2px solid #333 !important;
+      box-shadow: none !important;
+      padding: 16px 20px 12px !important;
+    }
+    .header-label { color: #555 !important; }
+    .header-title { color: #111 !important; font-size: 18pt !important; }
+    .header-icon { font-size: 22px !important; }
+    .prog-row { color: #333 !important; }
+    .prog-pct { color: #2a7a2a !important; }
+    .prog-bar-bg { background: #ddd !important; }
+    .prog-bar-fill { background: #2a7a2a !important; }
+
+    .filtros, .btn-filtro, .btn-clear, .btn-print, .fase-actions, #save-toast { display: none !important; }
+
+    #main { padding: 12px 0 0 !important; max-width: 100% !important; }
+
+    .fase-card {
+      box-shadow: none !important;
+      border: 1px solid #bbb !important;
+      border-radius: 6px !important;
+      margin-bottom: 12px !important;
+      page-break-inside: avoid;
+      overflow: visible !important;
+    }
+
+    .fase-header {
+      background: #e8e8e8 !important;
+      border-bottom: 1px solid #bbb !important;
+      padding: 10px 14px !important;
+    }
+    .fase-num { color: #fff !important; font-size: 9px !important; }
+    .fase-nome { color: #111 !important; font-size: 13px !important; }
+    .fase-prog-bg { background: #ccc !important; }
+    .fase-prog-fill { background: #2a7a2a !important; }
+    .fase-prog-txt { color: #333 !important; }
+    .fase-chevron { display: none !important; }
+
+    .fase-body,
+    .fase-body.open,
+    .fase-body:not(.open) {
+      display: block !important;
+      background: #fff !important;
+    }
+
+    .etapa-block { border-bottom: 1px solid #e0e0e0 !important; break-inside: avoid; }
+    .etapa-block.hide { display: block !important; }
+
+    .etapa-header {
+      background: #f5f5f5 !important;
+      border-left-width: 3px !important;
+      padding: 8px 14px !important;
+    }
+    .etapa-num { font-size: 9px !important; }
+    .etapa-nome { color: #222 !important; font-size: 12px !important; }
+    .etapa-cnt { color: #2a7a2a !important; background: #e0f0e0 !important; border-color: #aadaaa !important; }
+    .etapa-chevron { display: none !important; }
+
+    .etapa-items,
+    .etapa-items.open,
+    .etapa-items:not(.open) {
+      display: block !important;
+      padding: 4px 0 6px 38px !important;
+    }
+
+    .item-row { padding: 3px 10px 3px 0 !important; break-inside: avoid; }
+    .item-row.hide { display: flex !important; }
+
+    .item-box {
+      border-color: #444 !important;
+      background: transparent !important;
+      width: 14px !important; height: 14px !important;
+      margin-top: 3px !important;
+      flex-shrink: 0 !important;
+    }
+    .item-box.checked { background: #1a5a1a !important; border-color: #1a5a1a !important; }
+    .item-box svg { display: none !important; }
+    .item-box.checked svg { display: block !important; }
+    .item-box.checked svg path { stroke: #fff !important; }
+
+    .item-label { color: #111 !important; font-size: 10.5pt !important; }
+    .item-label.checked { color: #555 !important; text-decoration: line-through !important; }
+
+    #footer {
+      color: #555 !important;
+      border-top-color: #ccc !important;
+      font-size: 9pt !important;
+    }
+    #footer .footer-title { color: #2a7a2a !important; }
   }
 </style>
 </head>
