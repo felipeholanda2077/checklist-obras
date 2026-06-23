@@ -1,0 +1,1083 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Checklist Técnico de Obras — Construção Residencial</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Source+Sans+3:wght@300;400;600;700&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0a1a0a;
+    --bg2: #0f1f0f;
+    --bg3: #1a2e1a;
+    --green: #4a9a4a;
+    --green-bright: #4adf4a;
+    --green-light: #7ac97a;
+    --green-pale: #b8d8b8;
+    --green-faint: #1a3a1a;
+    --text: #e8f5e8;
+    --text-muted: #9dcf9d;
+    --text-dim: #5a9a5a;
+    --border: #2a4a2a;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Source Sans 3', sans-serif;
+    background: linear-gradient(135deg, #0d1f12 0%, #1a2e1a 50%, #0a1a0a 100%);
+    min-height: 100vh;
+    color: var(--text);
+  }
+
+  /* ── HEADER ── */
+  #header {
+    background: linear-gradient(135deg, #0a1f0a, #1a3a1a);
+    border-bottom: 3px solid var(--green);
+    padding: 28px 20px 20px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.6);
+  }
+  #header .inner { max-width: 900px; margin: 0 auto; }
+  .header-top { display: flex; align-items: center; gap: 14px; margin-bottom: 4px; }
+  .header-icon { font-size: 30px; }
+  .header-label {
+    font-size: 10px; letter-spacing: 4px; color: var(--green-light);
+    text-transform: uppercase; font-family: 'Source Sans 3', sans-serif;
+    margin-bottom: 2px;
+  }
+  .header-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(18px, 4vw, 26px);
+    font-weight: 700; color: var(--text); letter-spacing: 0.5px;
+  }
+
+  /* Progresso geral */
+  .prog-row {
+    display: flex; justify-content: space-between;
+    margin-bottom: 6px; font-size: 13px; color: var(--text-muted);
+  }
+  .prog-pct { font-weight: 700; color: var(--green-light); }
+  .prog-pct.done { color: var(--green-bright); }
+  .prog-bar-bg {
+    background: var(--green-faint); border-radius: 8px; height: 10px; overflow: hidden;
+  }
+  .prog-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--green), var(--green-light));
+    border-radius: 8px;
+    transition: width 0.5s ease;
+  }
+  .prog-bar-fill.done { background: linear-gradient(90deg, var(--green-bright), #2ab52a); }
+
+  /* Filtros */
+  .filtros { display: flex; gap: 8px; margin-top: 14px; flex-wrap: wrap; }
+  .btn-filtro {
+    padding: 5px 14px; border-radius: 20px; font-size: 12px;
+    border: 2px solid var(--border); background: transparent;
+    color: var(--green-light); cursor: pointer;
+    transition: all 0.2s; font-family: 'Source Sans 3', sans-serif;
+  }
+  .btn-filtro.ativo {
+    border-color: var(--green-light); background: #2a5a2a; color: var(--text);
+  }
+
+  /* Botões extras */
+  .btn-clear {
+    padding: 5px 14px; border-radius: 20px; font-size: 12px;
+    border: 2px solid #6b2a2a; background: transparent;
+    color: #df7a7a; cursor: pointer;
+    transition: all 0.2s; font-family: 'Source Sans 3', sans-serif;
+    margin-left: auto;
+  }
+  .btn-clear:hover { background: #3a1a1a; }
+  .btn-print {
+    padding: 5px 14px; border-radius: 20px; font-size: 12px;
+    border: 2px solid var(--border); background: transparent;
+    color: var(--green-light); cursor: pointer;
+    transition: all 0.2s; font-family: 'Source Sans 3', sans-serif;
+  }
+  .btn-print:hover { background: var(--green-faint); }
+
+  /* ── CONTEÚDO ── */
+  #main { max-width: 900px; margin: 0 auto; padding: 24px 16px 60px; }
+
+  /* ── CARD DE FASE ── */
+  .fase-card {
+    margin-bottom: 16px;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid transparent;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.4);
+  }
+  .fase-header {
+    padding: 14px 18px; cursor: pointer;
+    display: flex; align-items: center; gap: 12px;
+    user-select: none; border-bottom: 2px solid transparent;
+    transition: opacity 0.2s;
+  }
+  .fase-header:hover { opacity: 0.92; }
+  .fase-header .icon { font-size: 22px; }
+  .fase-meta { flex: 1; min-width: 0; }
+  .fase-badges { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; flex-wrap: wrap; }
+  .fase-num {
+    font-size: 10px; padding: 2px 8px; border-radius: 10px;
+    color: #fff; letter-spacing: 2px; white-space: nowrap;
+  }
+  .fase-nome {
+    font-weight: 700; font-size: clamp(13px, 3vw, 16px);
+    color: #fff; letter-spacing: 0.5px;
+  }
+  .fase-progresso { display: flex; align-items: center; gap: 8px; margin-top: 6px; }
+  .fase-prog-bg {
+    flex: 1; background: rgba(255,255,255,0.15);
+    border-radius: 6px; height: 5px;
+  }
+  .fase-prog-fill {
+    height: 100%; border-radius: 6px;
+    background: var(--green-light);
+    transition: width 0.4s ease;
+  }
+  .fase-prog-fill.done { background: var(--green-bright); }
+  .fase-prog-txt { font-size: 11px; color: rgba(255,255,255,0.8); white-space: nowrap; }
+  .fase-actions { display: flex; gap: 6px; }
+  .btn-all {
+    padding: 3px 10px; border-radius: 6px;
+    border: 1px solid rgba(255,255,255,0.3);
+    background: rgba(74,223,74,0.2); color: #afeaaf;
+    font-size: 10px; cursor: pointer; transition: background 0.2s;
+  }
+  .btn-all:hover { background: rgba(74,223,74,0.35); }
+  .btn-reset {
+    padding: 3px 10px; border-radius: 6px;
+    border: 1px solid rgba(255,255,255,0.2);
+    background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.6);
+    font-size: 10px; cursor: pointer; transition: background 0.2s;
+  }
+  .btn-reset:hover { background: rgba(255,255,255,0.15); }
+  .fase-chevron {
+    color: rgba(255,255,255,0.7); font-size: 20px;
+    transition: transform 0.3s ease; margin-left: 4px;
+    display: inline-block;
+  }
+  .fase-chevron.open { transform: rotate(90deg); }
+
+  /* ── CORPO DA FASE ── */
+  .fase-body { background: var(--bg2); display: none; }
+  .fase-body.open { display: block; }
+
+  /* ── ETAPA ── */
+  .etapa-block { border-bottom: 1px solid var(--green-faint); }
+  .etapa-block:last-child { border-bottom: none; }
+  .etapa-header {
+    padding: 10px 18px; display: flex; align-items: center; gap: 10px;
+    cursor: pointer; background: var(--bg2); user-select: none;
+    border-left: 3px solid transparent; transition: background 0.15s;
+  }
+  .etapa-header:hover { background: #131f13; }
+  .etapa-num {
+    width: 22px; height: 22px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px; font-weight: 700; flex-shrink: 0;
+  }
+  .etapa-nome { flex: 1; font-weight: 600; font-size: 13px; color: #c8e6c8; }
+  .etapa-cnt {
+    font-size: 11px; padding: 2px 8px; border-radius: 10px;
+    color: var(--green-light);
+    background: rgba(74,154,74,0.1);
+    border: 1px solid rgba(74,154,74,0.27);
+    white-space: nowrap; transition: all 0.3s;
+  }
+  .etapa-cnt.done { color: var(--green-bright); background: rgba(74,223,74,0.1); border-color: rgba(74,223,74,0.27); }
+  .etapa-chevron { color: var(--green); font-size: 14px; transition: transform 0.2s; display: inline-block; }
+  .etapa-chevron.open { transform: rotate(90deg); }
+  .etapa-items { padding: 4px 0 8px 42px; display: none; }
+  .etapa-items.open { display: block; }
+
+  /* ── ITEM ── */
+  .item-row {
+    display: flex; align-items: flex-start; gap: 10px;
+    padding: 5px 18px 5px 0; cursor: pointer;
+    border-radius: 6px; transition: background 0.15s;
+    user-select: none;
+  }
+  .item-row:hover { background: var(--green-faint); }
+  .item-box {
+    width: 18px; height: 18px; flex-shrink: 0;
+    border-radius: 4px; border: 2px solid #2a5a2a;
+    background: transparent; margin-top: 2px;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s;
+  }
+  .item-box.checked { background: var(--green-bright); border-color: var(--green-bright); }
+  .item-box svg { display: none; }
+  .item-box.checked svg { display: block; }
+  .item-label {
+    font-size: 13px; color: var(--green-pale); line-height: 1.5;
+    transition: all 0.2s;
+  }
+  .item-label.checked { color: #4a8a4a; text-decoration: line-through; }
+
+  /* ── RODAPÉ ── */
+  #footer {
+    margin-top: 32px; text-align: center; font-size: 12px;
+    color: var(--text-dim); border-top: 1px solid var(--green-faint);
+    padding-top: 20px; line-height: 1.8;
+  }
+  #footer .footer-title { color: #5a9a5a; font-weight: 600; margin-bottom: 4px; }
+
+  /* ── FILTROS ── */
+  .fase-card.hide { display: none; }
+  .etapa-block.hide { display: none; }
+  .item-row.hide { display: none; }
+
+  /* ── SALVO ── */
+  #save-toast {
+    position: fixed; bottom: 24px; right: 20px;
+    background: #1a4a1a; border: 1px solid var(--green);
+    color: var(--green-light); font-size: 12px;
+    padding: 8px 16px; border-radius: 20px;
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.4s;
+    z-index: 999;
+  }
+  #save-toast.show { opacity: 1; }
+
+  /* ── PRINT ── */
+  @media print {
+    body { background: #fff; color: #111; }
+    #header { position: static; background: #fff; border-bottom: 2px solid #333; }
+    .btn-filtro, .btn-clear, .btn-print, .fase-actions { display: none !important; }
+    .fase-card { box-shadow: none; border: 1px solid #ccc !important; page-break-inside: avoid; }
+    .fase-body { display: block !important; }
+    .etapa-items { display: block !important; }
+    .item-box { border-color: #333 !important; }
+    .item-box.checked { background: #333 !important; }
+    .item-label { color: #111 !important; }
+    .item-label.checked { color: #666 !important; }
+    .fase-nome, .etapa-nome { color: #111 !important; }
+    .header-title { color: #111 !important; }
+    .header-label { color: #444 !important; }
+    #save-toast { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div id="header">
+  <div class="inner">
+    <div class="header-top">
+      <span class="header-icon">🏗️</span>
+      <div>
+        <div class="header-label">CHECKLIST TÉCNICO</div>
+        <div class="header-title">Gestão de Obra — Casa Residencial</div>
+      </div>
+    </div>
+    <div style="margin-top:16px">
+      <div class="prog-row">
+        <span id="prog-txt">0 de 0 itens concluídos</span>
+        <span class="prog-pct" id="prog-pct">0%</span>
+      </div>
+      <div class="prog-bar-bg">
+        <div class="prog-bar-fill" id="prog-fill" style="width:0%"></div>
+      </div>
+    </div>
+    <div class="filtros">
+      <button class="btn-filtro ativo" onclick="setFiltro('todas',this)">Todas as Fases</button>
+      <button class="btn-filtro" onclick="setFiltro('pendentes',this)">⏳ Pendentes</button>
+      <button class="btn-filtro" onclick="setFiltro('concluidas',this)">✅ Concluídas</button>
+      <button class="btn-print" onclick="window.print()">🖨️ Imprimir</button>
+      <button class="btn-clear" onclick="limparTudo()">🗑️ Zerar</button>
+    </div>
+  </div>
+</div>
+
+<!-- CONTEÚDO -->
+<div id="main"></div>
+
+<!-- RODAPÉ -->
+<div id="footer" style="max-width:900px;margin:0 auto;padding:0 16px 60px">
+  <div style="font-size:20px;margin-bottom:8px">🏗️</div>
+  <div class="footer-title">Checklist Técnico de Obras — Construção Residencial</div>
+  <div>Referências: ABNT NBR 6118 · NBR 5626 · NBR 5410 · NBR 8160 · NBR 13816 · NR-18 · NR-35</div>
+  <div style="margin-top:4px">Este checklist é um guia de referência. Sempre siga os projetos aprovados e normas vigentes.</div>
+</div>
+
+<div id="save-toast">✓ Progresso salvo</div>
+
+<script>
+/* ═══════════════════════════════════════════
+   DADOS
+═══════════════════════════════════════════ */
+const DATA = [
+  {
+    id: 1, fase: "PRÉ-OBRA", icone: "📋",
+    cor: "#1a3c2e", corBorda: "#2d6a4f",
+    etapas: [
+      { nome: "Documentação e Regularização", itens: [
+        "Título de propriedade / escritura do terreno",
+        "Certidão de uso do solo emitida pela prefeitura",
+        "Projeto arquitetônico aprovado pela prefeitura",
+        "Projeto estrutural (fundação e estrutura) aprovado por engenheiro",
+        "Projeto hidrossanitário aprovado por engenheiro",
+        "Projeto elétrico aprovado por engenheiro eletricista",
+        "Alvará de construção emitido pela prefeitura",
+        "ART (Anotação de Responsabilidade Técnica) do engenheiro responsável",
+        "RRT (Registro de Responsabilidade Técnica) do arquiteto responsável",
+        "Matrícula da obra no INSS (CNO — Cadastro Nacional de Obras)",
+        "Licença ambiental (se necessário, dependendo do bioma e município)",
+        "Cadastro da obra na Vigilância Sanitária (se aplicável)",
+      ]},
+      { nome: "Planejamento e Orçamento", itens: [
+        "Memorial descritivo completo com especificações de materiais",
+        "Orçamento analítico detalhado por etapa e serviço",
+        "Cronograma físico-financeiro da obra",
+        "Definição do modelo de contratação (empreitada global, parcial ou administração)",
+        "Contrato de prestação de serviços com empreiteiro ou construtora",
+        "Contrato com fornecedores de materiais críticos (aço, concreto, esquadrias)",
+        "Levantamento de quantitativos (QS) por etapa",
+        "Reserva de contingência de 10 a 15% do orçamento total",
+        "Definição do fluxo de caixa mês a mês",
+        "Pesquisa e habilitação de fornecedores",
+      ]},
+      { nome: "Reconhecimento e Preparo do Terreno", itens: [
+        "Sondagem do solo (SPT ou ensaios equivalentes)",
+        "Laudo geotécnico do terreno",
+        "Levantamento topográfico completo do terreno",
+        "Análise de nível do lençol freático",
+        "Verificação de interferências subterrâneas (tubulações, cabos, antigos poços)",
+        "Identificação de riscos de erosão e taludes",
+        "Verificação de nascentes ou cursos d'água no terreno",
+        "Análise de ventos predominantes e orientação solar",
+      ]},
+      { nome: "Instalação do Canteiro de Obras", itens: [
+        "Tapume de isolamento do terreno conforme norma (NBR 12284)",
+        "Placa de obra conforme exigências da prefeitura e CREA/CAU",
+        "Instalação de banheiro químico ou sanitário provisório",
+        "Barracão de ferramentas e depósito de materiais",
+        "Ligação provisória de energia elétrica (QGBT provisório)",
+        "Ligação provisória de água",
+        "Local seguro para armazenagem de cimento, areia, brita e aço",
+        "Betoneira, andaimes e equipamentos necessários",
+        "EPIs para todos os trabalhadores (capacete, bota, luva, óculos, cinto)",
+        "PCMSO e PPRA da obra (Programa de Controle Médico e Riscos Ambientais)",
+        "Exames admissionais de todos os trabalhadores",
+        "Livro de ordem da obra",
+        "Instalação de ponto de água para limpeza de ferramentas e higiene",
+      ]},
+    ]
+  },
+  {
+    id: 2, fase: "FUNDAÇÃO", icone: "⛏️",
+    cor: "#3d2b1f", corBorda: "#8b5e3c",
+    etapas: [
+      { nome: "Serviços Preliminares", itens: [
+        "Limpeza e destocamento do terreno",
+        "Demolição de estruturas existentes (se houver)",
+        "Terraplanagem e nivelamento do terreno conforme projeto",
+        "Locação da obra com gabarito preciso (cordas e estacas)",
+        "Verificação de cotas altimétricas conforme projeto",
+        "Escavação dos blocos, sapatas ou baldrames conforme projeto",
+        "Remoção e descarte correto do material escavado",
+      ]},
+      { nome: "Fundação Superficial (Radier, Sapata, Baldrame)", itens: [
+        "Compactação do fundo de escavação",
+        "Execução do lastro de concreto magro (espessura conforme projeto)",
+        "Montagem das fôrmas para sapatas e baldrames",
+        "Posicionamento e amarração da armadura conforme projeto estrutural",
+        "Cobrimento mínimo das armaduras conforme NBR 6118",
+        "Passagens de eletrodutos e tubulações hidráulicas abaixo da fundação",
+        "Concretagem com traço conforme projeto (concreto usinado ou dosado em obra)",
+        "Adensamento com vibrador de imersão",
+        "Cura do concreto por no mínimo 7 dias",
+        "Desforma respeitando os prazos normativos",
+        "Reaterro e compactação por camadas (máx. 20 cm por camada)",
+        "Impermeabilização da fundação com manta asfáltica ou produto específico",
+        "Drenagem perimetral da fundação (se necessário)",
+      ]},
+      { nome: "Fundação Profunda (Estacas)", itens: [
+        "Mobilização de equipamento de estaqueamento",
+        "Marcação dos pontos de estacas conforme projeto",
+        "Execução das estacas (hélice contínua, escavada, cravada, raiz — conforme projeto)",
+        "Ensaio de integridade das estacas (PDA ou prova de carga se exigido)",
+        "Escavação e execução dos blocos de coroamento",
+        "Armação dos blocos conforme projeto",
+        "Concretagem dos blocos com adensamento",
+        "Cura e desforma dos blocos",
+        "Execução das vigas de baldrame (se houver)",
+      ]},
+    ]
+  },
+  {
+    id: 3, fase: "ESTRUTURA", icone: "🏗️",
+    cor: "#1c2d4a", corBorda: "#2e5fa3",
+    etapas: [
+      { nome: "Estrutura de Concreto Armado", itens: [
+        "Locação dos pilares conforme planta estrutural",
+        "Montagem de fôrmas dos pilares (madeira, metálica ou plástica)",
+        "Posicionamento e amarração da armadura dos pilares",
+        "Verificação de verticalidade dos pilares com prumo",
+        "Concretagem dos pilares com adensamento por vibrador",
+        "Cura dos pilares (mínimo 3 dias molhado ou proteção)",
+        "Montagem das fôrmas de vigas e lajes",
+        "Escoramento adequado de lajes (vãos e cargas conforme projeto)",
+        "Armação das vigas (positiva, negativa e estribos)",
+        "Armação da laje (positiva e negativa, barras de distribuição)",
+        "Passagem de eletrodutos, caixas e tubulações na laje antes do concreto",
+        "Verificação de todos os espaçadores para cobrimento",
+        "Concretagem monolítica de vigas e laje (preferencialmente em único lançamento)",
+        "Adensamento cuidadoso sem deslocamento das armaduras",
+        "Cura da laje (mínimo 7 dias com proteção e umidade)",
+        "Retirada de escoramento somente após atingir resistência (mínimo 21 dias)",
+        "Retirada de fôrmas sem impactos prejudiciais à estrutura",
+        "Verificação de fissuras, ninhos e imperfeições após desforma",
+        "Recuperação de falhas com graute ou concreto projetado",
+      ]},
+      { nome: "Estrutura Metálica (quando aplicável)", itens: [
+        "Recebimento e conferência das peças metálicas conforme projeto",
+        "Verificação dos documentos de qualidade do aço (certificados)",
+        "Içamento e montagem com equipamento adequado",
+        "Nivelamento e alinhamento das peças",
+        "Ligações parafusadas ou soldadas conforme projeto",
+        "Laudo de soldagem por profissional habilitado",
+        "Aplicação de primer anticorrosivo e pintura de acabamento",
+        "Proteção passiva contra incêndio (se exigido pelo projeto de PPCI)",
+      ]},
+      { nome: "Vedações e Alvenaria", itens: [
+        "Definição do tipo de bloco (cerâmico, concreto, celular, drywall)",
+        "Elevação das paredes externas conforme projeto",
+        "Elevação das paredes internas e divisórias",
+        "Amarração correta da alvenaria com a estrutura (ferros de amarração a cada 3 fiadas)",
+        "Vergas e contravergas em todas as aberturas (portas e janelas)",
+        "Posicionamento correto das caixas de passagem e eletrodutos embutidos",
+        "Passagem de tubulações hidráulicas e de gás nas paredes",
+        "Nivelamento e prumo das paredes ao longo da elevação",
+        "Encunhamento correto entre alvenaria e estrutura (argamassa ou espuma PU)",
+        "Impermeabilização na base das paredes externas e úmidas (cinta / graute)",
+        "Pingadeiras e peitoris nas janelas conforme projeto",
+        "Abertura de rasgos para tubulações — somente quando necessário e com cuidado",
+        "Fechamento dos rasgos com argamassa adequada antes do reboco",
+      ]},
+    ]
+  },
+  {
+    id: 4, fase: "COBERTURA", icone: "🏠",
+    cor: "#2d1f3d", corBorda: "#7c3aed",
+    etapas: [
+      { nome: "Estrutura do Telhado", itens: [
+        "Definição do tipo de estrutura (madeira, metálica, pré-moldada)",
+        "Execução da viga de cumeeira e terças conforme projeto",
+        "Instalação das tesouras ou caibros e ripas",
+        "Tratamento preservativo da madeira contra cupins e fungos",
+        "Fixação segura da estrutura aos elementos da cobertura (tirantes, parafusos)",
+        "Verificação do escoamento pluvial — caimento mínimo conforme norma",
+        "Colocação de manta impermeabilizante subcobertura (se previsto)",
+        "Instalação das telhas conforme especificação (cerâmica, concreto, metálica, fibrocimento, shingle)",
+        "Cumeeira, espigões e rincões bem vedados",
+        "Rufos e contra-rufos em todos os pontos de encontro com paredes",
+        "Instalação das calhas e condutores pluviais",
+        "Verificação do escoamento total e ausência de pontos de retenção",
+        "Teste com água para verificar estanqueidade",
+        "Instalação de telas e protetores de calha (se necessário)",
+        "Instalação de para-raios (SPDA) conforme projeto e ABNT NBR 5419",
+      ]},
+      { nome: "Laje de Cobertura / Forro", itens: [
+        "Impermeabilização da laje de cobertura (manta asfáltica, argamassa polimérica, etc.)",
+        "Teste de estanqueidade da impermeabilização (72h com lâmina d'água)",
+        "Proteção mecânica da impermeabilização (argamassa ou cerâmica)",
+        "Instalação do forro (gesso, PVC, madeira, drywall — conforme projeto)",
+        "Isolamento térmico e/ou acústico (lã de vidro, lã de rocha, EPS — conforme especificação)",
+        "Verificação de ventilação do ático/sótão",
+      ]},
+    ]
+  },
+  {
+    id: 5, fase: "INSTALAÇÕES", icone: "🔧",
+    cor: "#1a3a2a", corBorda: "#059669",
+    etapas: [
+      { nome: "Instalações Hidrossanitárias", itens: [
+        "Projeto aprovado por engenheiro hidráulico",
+        "Definição dos pontos de água fria, quente e esgoto",
+        "Passagem das tubulações de água fria (PVC ou CPVC ou PEX)",
+        "Passagem das tubulações de água quente (CPVC ou PEX — conforme especificação)",
+        "Execução da rede de esgoto com declividade mínima (1 a 2% conforme NBR 8160)",
+        "Instalação de caixas de inspeção e sifões",
+        "Instalação de caixa d'água (limpeza e vedação do reservatório)",
+        "Instalação de caixa de gordura (conforme exigência municipal)",
+        "Execução de fossa séptica e sumidouro (se não houver rede pública)",
+        "Ligação à rede pública de esgoto (quando disponível)",
+        "Instalação da central de medição de água",
+        "Teste de pressão na rede de água fria (mínimo 4 kgf/cm² por 4h — ABNT NBR 5626)",
+        "Teste de estanqueidade da rede de esgoto",
+        "Instalação de registros de gaveta e esfera em pontos estratégicos",
+        "Esperas para chuveiros, torneiras, máquina de lavar e louças sanitárias",
+        "Instalação do aquecedor (solar, elétrico, a gás — conforme projeto)",
+        "Passagem da tubulação de gás (cobre ou PEAD) com ART de responsabilidade",
+        "Teste de estanqueidade do ramal de gás",
+        "Instalação da central de gás com reguladores e válvulas de segurança",
+      ]},
+      { nome: "Instalações Elétricas", itens: [
+        "Projeto elétrico aprovado por engenheiro eletricista com ART",
+        "Definição da entrada de serviço (padrão de entrada conforme distribuidora)",
+        "Instalação do quadro de medição conforme padrão da concessionária",
+        "Execução do SPDA (Sistema de Proteção contra Descargas Atmosféricas)",
+        "Execução da malha de aterramento com medição de resistividade",
+        "Instalação do Quadro de Distribuição Geral (QDG) com disjuntores e DPS",
+        "Passagem dos eletrodutos (PVC rígido, flexível corrugado ou metálico — conforme projeto)",
+        "Instalação das caixas de passagem, caixas de tomada e interruptores",
+        "Passagem dos condutores (bitola conforme projeto e NBR 5410)",
+        "Separação de circuitos: iluminação, tomadas gerais, ar-condicionado, chuveiro, forno",
+        "Instalação de tomadas ABNT NBR 14136 (padrão brasileiro 2P+T)",
+        "Pontos para ar-condicionado (fase, neutro e aterramento)",
+        "Pontos de TV, internet (cabeamento estruturado Cat6 ou fibra interna)",
+        "Pontos de interfone e alarme",
+        "Pontos de câmeras de segurança (CFTV)",
+        "Teste de continuidade e isolação dos circuitos",
+        "Instalação de iluminação de emergência (se exigido pelo PPCI)",
+        "Entrega do As Built elétrico ao proprietário",
+      ]},
+      { nome: "Instalações de Climatização e Ventilação", itens: [
+        "Definição dos pontos de dreno do ar-condicionado",
+        "Passagem de tubulação de cobre e dreno nos shafts",
+        "Previsão de estrutura para suporte das condensadoras",
+        "Previsão de pontos elétricos exclusivos para splits",
+        "Ventilação dos banheiros e áreas de serviço (dutos ou venezianas)",
+        "Exaustão da cozinha (coifa e duto de saída para exterior)",
+      ]},
+    ]
+  },
+  {
+    id: 6, fase: "REVESTIMENTOS", icone: "🪣",
+    cor: "#3a2d1a", corBorda: "#c07c2a",
+    etapas: [
+      { nome: "Revestimentos de Paredes Internas", itens: [
+        "Chapisco em toda a extensão das paredes (adesão da camada posterior)",
+        "Emboço (reboco grosso) com argamassa mista ou industrializada — verificar prumo e nível",
+        "Reboco fino (massa única ou reboco convencional)",
+        "Tratamento de trincas e fissuras antes do acabamento final",
+        "Aplicação de massa corrida (PVA ou acrílica) após cura do reboco",
+        "Lixamento e limpeza das superfícies",
+        "Aplicação de selador de parede",
+        "Pintura de fundo (primer compatível com a tinta de acabamento)",
+        "Aplicação de tinta (mínimo 2 demãos ou conforme especificação)",
+        "Revestimento cerâmico ou porcelanato em áreas molhadas (banheiros, cozinha)",
+        "Rejuntamento adequado e aplicação de impermeabilizante nas juntas",
+        "Nicho e bordas bem acabados",
+      ]},
+      { nome: "Revestimentos de Paredes Externas", itens: [
+        "Chapisco com adesivo acrílico ou específico para fachada",
+        "Emboço externo com argamassa reforçada",
+        "Impermeabilização de embasamento e platibandas",
+        "Aplicação de revestimento externo (textura acrílica, pastilhas, pedras, ACM, HPL — conforme projeto)",
+        "Pintura com tinta elastomérica ou acrílica de alta resistência",
+        "Execução de frisos, detalhes e quinas com cantoneiras metálicas ou PVC",
+        "Instalação de pingadeiras em peitoris e marquises",
+        "Vedação de todas as juntas com selante compatível",
+        "Proteção de rodapé externo (embasamento impermeabilizado)",
+      ]},
+      { nome: "Revestimentos de Pisos", itens: [
+        "Contrapiso nivelado sobre laje ou solo compactado (argamassa de regularização)",
+        "Verificação do caimento em áreas molhadas (mínimo 1% para ralos)",
+        "Impermeabilização de pisos de banheiros, lavanderia e sacadas (com teste de estanqueidade)",
+        "Assentamento de cerâmica, porcelanato, mármore ou granito com argamassa adequada",
+        "Juntas de dilatação respeitadas conforme norma (NBR 13816 e NBR 13817)",
+        "Rejuntamento com produto compatível (epóxi em ambientes industriais ou de alta exposição)",
+        "Instalação de rodapé compatível com o piso",
+        "Piso de madeira (taco, régua, laminado, vinílico): aclimatação, nivelamento e execução conforme fabricante",
+        "Piso de concreto polido ou estampado: execução, cura, polimento e proteção final",
+        "Soleiras em pedra natural ou porcelanato nas portas",
+        "Escadas: revestimento de degraus e espelhos, peitoril e corrimão",
+      ]},
+    ]
+  },
+  {
+    id: 7, fase: "ESQUADRIAS E SERRALHERIA", icone: "🚪",
+    cor: "#1f3040", corBorda: "#1e7ab8",
+    etapas: [
+      { nome: "Portas e Janelas", itens: [
+        "Verificação das medidas dos vãos antes do pedido de fabricação",
+        "Instalação de marcos e batentes de portas (nivelamento e prumo rigorosos)",
+        "Instalação das folhas de portas (ajuste de dobradiças e fechaduras)",
+        "Instalação de janelas (alumínio, PVC, madeira, ferro — conforme projeto)",
+        "Vedação perimetral das janelas com espuma expansiva e selante de silicone",
+        "Instalação de vidros (tipo e espessura conforme projeto de vidros e ABNT NBR 7199)",
+        "Teste de abertura, fechamento e travamento de todas as peças",
+        "Instalação de telas milimétricas e mosquiteiros (se previstos)",
+        "Instalação de grades de proteção (se necessário)",
+        "Ajuste de folgas, gaxetas e borrachas de vedação",
+        "Instalação de peitoris internos e externos",
+      ]},
+      { nome: "Portões e Cercamentos", itens: [
+        "Instalação de portão de pedestre e de veículos",
+        "Instalação de motor de portão com aterramento e proteção elétrica",
+        "Fechamento do muro ou gradil perimetral conforme projeto",
+        "Instalação de interfone, câmeras e controle de acesso",
+        "Pintura ou acabamento das grades e portões",
+      ]},
+    ]
+  },
+  {
+    id: 8, fase: "LOUÇAS, METAIS E ACABAMENTOS", icone: "🚿",
+    cor: "#1a3535", corBorda: "#0d9488",
+    etapas: [
+      { nome: "Banheiros e Lavabos", itens: [
+        "Instalação de bacia sanitária com assento",
+        "Instalação de caixa de descarga (embutida ou sobreposta)",
+        "Instalação de cuba de pia (embutir, semiencaixe ou apoio)",
+        "Instalação de torneira de pia e de jardim",
+        "Instalação de ducha higiênica e misturadores de chuveiro",
+        "Instalação de cabine de banho ou banheira (conforme projeto)",
+        "Instalação de espelho e kit de acessórios (toalheiro, papeleira, saboneteira)",
+        "Fixação de box de vidro temperado com perfis de alumínio",
+        "Instalação de ralos com fechamento (anti-inseto)",
+        "Verificação de todos os sifões e vedações sob as louças",
+        "Silicone em todos os encontros louça/parede e louça/piso",
+      ]},
+      { nome: "Cozinha e Área de Serviço", itens: [
+        "Instalação de tanque de lavanderia",
+        "Instalação de bancada de cozinha (pedra, inox, porcelanato — conforme projeto)",
+        "Instalação de torneira de cozinha com registro de gaveta",
+        "Instalação de torneira de máquina de lavar",
+        "Instalação de exaustor ou coifa com duto externo",
+        "Ponto de fogão a gás com registro e flexível aprovado",
+        "Instalação de louça de pia de cozinha (cuba simples ou dupla)",
+        "Instalação de armários e bancadas sob medida (marcenaria)",
+        "Ralos e caimentos verificados na área de serviço",
+      ]},
+      { nome: "Marcenaria e Móveis Planejados", itens: [
+        "Instalação de armários de cozinha conforme projeto de marcenaria",
+        "Instalação de guarda-roupas embutidos",
+        "Instalação de closets e armários de corredor",
+        "Verificação de alinhamento, nivelamento e abertura das portas",
+        "Instalação de puxadores, dobradiças e corrediças de gaveta",
+        "Acabamento de rodapés internos dos armários",
+      ]},
+      { nome: "Acabamentos Gerais", itens: [
+        "Instalação de rodapés em todos os ambientes",
+        "Instalação de sancas e molduras de gesso (se previsto)",
+        "Revisão e retoque de pintura em todos os ambientes",
+        "Instalação de luminárias, arandelas e spots",
+        "Instalação de interruptores e tomadas com espelhos",
+        "Instalação de tampas de inspeção e grelhas",
+        "Revisão de todos os ralos e caixas de passagem",
+        "Instalação de corrimãos e guarda-corpos",
+        "Calafetação de todos os pontos críticos (janelas, soleiras, rufos)",
+      ]},
+    ]
+  },
+  {
+    id: 9, fase: "ÁREAS EXTERNAS", icone: "🌿",
+    cor: "#1e3a1e", corBorda: "#3d8b3d",
+    etapas: [
+      { nome: "Infraestrutura Externa", itens: [
+        "Execução de calçadas perimetrais e calçada municipal (passeio público)",
+        "Execução de garagem e pisos externos",
+        "Drenagem superficial do terreno (canaletas, grelhas, bocas de lobo)",
+        "Aterramento e compactação de áreas não pavimentadas",
+        "Instalação da caixa de entrada d'água (hidrômetro) com registro",
+        "Instalação de medidor de energia elétrica no padrão da concessionária",
+        "Ligação definitiva de energia elétrica (vistoria pela distribuidora)",
+        "Ligação definitiva de água e esgoto (vistoria pela concessionária)",
+        "Instalação de interfone e campainha",
+        "Execução de muro de divisa e alambrado conforme projeto",
+      ]},
+      { nome: "Paisagismo e Áreas de Lazer", itens: [
+        "Execução de piscina ou espelho d'água (se previsto): estrutura, impermeabilização, hidráulica e elétrica",
+        "Instalação de equipamentos de lazer (churrasqueira, forno, espaço gourmet)",
+        "Plantio de grama e paisagismo conforme projeto",
+        "Instalação de sistema de irrigação (se previsto)",
+        "Iluminação de jardim e área externa",
+        "Caramanchão, pergolado ou gazebo (estrutura e acabamento)",
+        "Deck externo em madeira, porcelanato ou concreto drenante",
+      ]},
+    ]
+  },
+  {
+    id: 10, fase: "ENTREGA E PÓS-OBRA", icone: "🏆",
+    cor: "#3a2000", corBorda: "#d4a017",
+    etapas: [
+      { nome: "Verificações Finais", itens: [
+        "Vistoria completa com o proprietário em todos os ambientes",
+        "Teste de todas as instalações elétricas (tomadas, interruptores, iluminação)",
+        "Teste de toda a rede hidráulica (pressão, vedação, descarga)",
+        "Teste de todas as instalações de gás (estanqueidade e funcionamento)",
+        "Verificação de todas as aberturas (portas, janelas, portões)",
+        "Verificação de caimentos em áreas molhadas",
+        "Verificação de estanqueidade de coberturas e terraços",
+        "Funcionamento correto do SPDA e aterramento",
+        "Verificação de CFTV, interfone e automação",
+        "Funcionamento do ar-condicionado e ventilação",
+        "Lista de pendências assinada por ambas as partes",
+        "Prazo definido para resolução de pendências",
+      ]},
+      { nome: "Documentação de Entrega", itens: [
+        "Habite-se (Carta de Habitação) emitido pela prefeitura",
+        "Averbação da construção no Cartório de Registro de Imóveis",
+        "Encerramento da matrícula no INSS (CNO) com quitação de débitos",
+        "Certidão Negativa de Débitos trabalhistas e previdenciários",
+        "Manual do proprietário com especificações de todos os materiais",
+        "As Built de todas as instalações (hidráulica, elétrica, estrutural)",
+        "Garantias de fabricantes (telhas, impermeabilizações, esquadrias, equipamentos)",
+        "Nota fiscal de todos os materiais e equipamentos instalados",
+        "Relação de fornecedores e contatos para futuras manutenções",
+        "ART de conclusão de obra assinada pelo engenheiro responsável",
+        "Termo de recebimento da obra assinado pelo proprietário",
+      ]},
+      { nome: "Manutenção Preventiva — Programação Pós-Entrega", itens: [
+        "Limpeza das calhas e condutores pluviais (a cada 6 meses)",
+        "Revisão da impermeabilização de terraços e telhado (anual)",
+        "Revisão do SPDA — para-raios (anual por profissional habilitado)",
+        "Revisão das instalações elétricas (a cada 2 anos)",
+        "Revisão dos sifões, ralos e redes hidráulicas (semestral)",
+        "Recarga e revisão de extintores de incêndio (anual)",
+        "Manutenção do aquecedor e sistema de gás (anual)",
+        "Tratamento preventivo de cupins (madeiramentos — a cada 2 anos)",
+        "Limpeza da caixa d'água (semestral conforme ABNT NBR 5626)",
+        "Revisão de rejuntes, silicone e vedações externas (anual)",
+        "Revisão de pintura externa e diagnóstico de manchas ou eflorescências (bianual)",
+      ]},
+    ]
+  },
+];
+
+/* ═══════════════════════════════════════════
+   ESTADO
+═══════════════════════════════════════════ */
+const STORAGE_KEY = 'checklist_obras_v1';
+let state = {};
+let filtro = 'todas';
+let toastTimer = null;
+
+function loadState() {
+  try { state = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; }
+  catch(e) { state = {}; }
+}
+
+function saveState() {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    showToast();
+  } catch(e) {}
+}
+
+function showToast() {
+  const t = document.getElementById('save-toast');
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 1800);
+}
+
+function itemKey(fi, ei, ii) { return `${fi}_${ei}_${ii}`; }
+
+function getChecked(fi, ei, ii) { return !!state[itemKey(fi, ei, ii)]; }
+
+function setChecked(fi, ei, ii, val) {
+  if (val) state[itemKey(fi, ei, ii)] = true;
+  else delete state[itemKey(fi, ei, ii)];
+}
+
+function totalItems() {
+  return DATA.reduce((a, f) => a + f.etapas.reduce((b, e) => b + e.itens.length, 0), 0);
+}
+
+function totalCheckedAll() {
+  return Object.keys(state).length;
+}
+
+function faseStats(fi) {
+  const fase = DATA[fi];
+  const total = fase.etapas.reduce((a, e) => a + e.itens.length, 0);
+  let done = 0;
+  fase.etapas.forEach((etapa, ei) => {
+    etapa.itens.forEach((_, ii) => { if (getChecked(fi, ei, ii)) done++; });
+  });
+  return { total, done, pct: total ? Math.round(done/total*100) : 0 };
+}
+
+function etapaStats(fi, ei) {
+  const etapa = DATA[fi].etapas[ei];
+  let done = 0;
+  etapa.itens.forEach((_, ii) => { if (getChecked(fi, ei, ii)) done++; });
+  return { total: etapa.itens.length, done };
+}
+
+/* ═══════════════════════════════════════════
+   RENDER
+═══════════════════════════════════════════ */
+function renderAll() {
+  const main = document.getElementById('main');
+  main.innerHTML = '';
+  DATA.forEach((fase, fi) => {
+    main.appendChild(renderFase(fase, fi));
+  });
+  updateGlobalProgress();
+  applyFiltro();
+}
+
+function renderFase(fase, fi) {
+  const { total, done, pct } = faseStats(fi);
+  const card = document.createElement('div');
+  card.className = 'fase-card';
+  card.id = `fase-${fi}`;
+  card.style.borderColor = fase.corBorda + '44';
+
+  // Header
+  const header = document.createElement('div');
+  header.className = 'fase-header';
+  header.style.background = `linear-gradient(135deg, ${fase.cor}, ${fase.cor}dd)`;
+  if (pct === 100) header.style.borderBottomColor = fase.corBorda + '66';
+  header.innerHTML = `
+    <span class="icon">${fase.icone}</span>
+    <div class="fase-meta">
+      <div class="fase-badges">
+        <span class="fase-num" style="background:${fase.corBorda}">FASE ${fase.id}</span>
+        <span class="fase-nome">${fase.fase}</span>
+        ${pct===100 ? '<span>✅</span>' : ''}
+      </div>
+      <div class="fase-progresso">
+        <div class="fase-prog-bg">
+          <div class="fase-prog-fill${pct===100?' done':''}" style="width:${pct}%"></div>
+        </div>
+        <span class="fase-prog-txt">${done}/${total}</span>
+      </div>
+    </div>
+    <div class="fase-actions">
+      <button class="btn-all" title="Marcar todos">✓ Tudo</button>
+      <button class="btn-reset" title="Desmarcar todos">↺</button>
+    </div>
+    <span class="fase-chevron open">›</span>
+  `;
+
+  // Eventos do header
+  const chevron = header.querySelector('.fase-chevron');
+  header.addEventListener('click', (e) => {
+    if (e.target.closest('.btn-all') || e.target.closest('.btn-reset')) return;
+    const body = card.querySelector('.fase-body');
+    const open = body.classList.toggle('open');
+    chevron.classList.toggle('open', open);
+    header.style.borderBottomColor = open ? fase.corBorda + '66' : 'transparent';
+  });
+  header.querySelector('.btn-all').addEventListener('click', (e) => {
+    e.stopPropagation();
+    DATA[fi].etapas.forEach((et, ei) => et.itens.forEach((_, ii) => setChecked(fi, ei, ii, true)));
+    saveState(); refreshFase(fi);
+  });
+  header.querySelector('.btn-reset').addEventListener('click', (e) => {
+    e.stopPropagation();
+    DATA[fi].etapas.forEach((et, ei) => et.itens.forEach((_, ii) => setChecked(fi, ei, ii, false)));
+    saveState(); refreshFase(fi);
+  });
+
+  card.appendChild(header);
+
+  // Body
+  const body = document.createElement('div');
+  body.className = 'fase-body open';
+  DATA[fi].etapas.forEach((etapa, ei) => body.appendChild(renderEtapa(etapa, fi, ei, fase)));
+  card.appendChild(body);
+
+  return card;
+}
+
+function renderEtapa(etapa, fi, ei, fase) {
+  const { total, done } = etapaStats(fi, ei);
+  const block = document.createElement('div');
+  block.className = 'etapa-block';
+  block.id = `etapa-${fi}-${ei}`;
+
+  const header = document.createElement('div');
+  header.className = 'etapa-header';
+  header.style.borderLeftColor = fase.corBorda;
+  header.innerHTML = `
+    <span class="etapa-num" style="background:${fase.corBorda}33;border:1px solid ${fase.corBorda};color:${fase.corBorda}">${ei+1}</span>
+    <span class="etapa-nome">${etapa.nome}</span>
+    <span class="etapa-cnt${done===total?' done':''}">${done}/${total}</span>
+    <span class="etapa-chevron open">›</span>
+  `;
+
+  const chevron = header.querySelector('.etapa-chevron');
+  header.addEventListener('click', () => {
+    const items = block.querySelector('.etapa-items');
+    const open = items.classList.toggle('open');
+    chevron.classList.toggle('open', open);
+  });
+
+  block.appendChild(header);
+
+  const items = document.createElement('div');
+  items.className = 'etapa-items open';
+  etapa.itens.forEach((item, ii) => items.appendChild(renderItem(item, fi, ei, ii, fase)));
+  block.appendChild(items);
+
+  return block;
+}
+
+function renderItem(item, fi, ei, ii, fase) {
+  const row = document.createElement('div');
+  row.className = 'item-row';
+  row.id = `item-${fi}-${ei}-${ii}`;
+  const checked = getChecked(fi, ei, ii);
+  row.innerHTML = `
+    <div class="item-box${checked?' checked':''}">
+      <svg width="10" height="8" viewBox="0 0 10 8" fill="none">
+        <path d="M1 4L3.5 6.5L9 1" stroke="#0a1f0a" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <span class="item-label${checked?' checked':''}">${item}</span>
+  `;
+  row.addEventListener('click', () => {
+    const val = !getChecked(fi, ei, ii);
+    setChecked(fi, ei, ii, val);
+    saveState();
+    refreshItem(fi, ei, ii);
+    refreshEtapa(fi, ei);
+    refreshFaseHeader(fi);
+    updateGlobalProgress();
+    applyFiltro();
+  });
+  return row;
+}
+
+/* ═══════════════════════════════════════════
+   REFRESH PARCIAL
+═══════════════════════════════════════════ */
+function refreshItem(fi, ei, ii) {
+  const row = document.getElementById(`item-${fi}-${ei}-${ii}`);
+  if (!row) return;
+  const checked = getChecked(fi, ei, ii);
+  const box = row.querySelector('.item-box');
+  const label = row.querySelector('.item-label');
+  box.classList.toggle('checked', checked);
+  label.classList.toggle('checked', checked);
+}
+
+function refreshEtapa(fi, ei) {
+  const block = document.getElementById(`etapa-${fi}-${ei}`);
+  if (!block) return;
+  const { total, done } = etapaStats(fi, ei);
+  const cnt = block.querySelector('.etapa-cnt');
+  cnt.textContent = `${done}/${total}`;
+  cnt.classList.toggle('done', done === total);
+}
+
+function refreshFaseHeader(fi) {
+  const card = document.getElementById(`fase-${fi}`);
+  if (!card) return;
+  const { total, done, pct } = faseStats(fi);
+  const fill = card.querySelector('.fase-prog-fill');
+  const txt = card.querySelector('.fase-prog-txt');
+  const badges = card.querySelector('.fase-badges');
+  fill.style.width = pct + '%';
+  fill.classList.toggle('done', pct === 100);
+  txt.textContent = `${done}/${total}`;
+  // ✅ badge
+  let badge = badges.querySelector('.done-badge');
+  if (pct === 100 && !badge) {
+    badge = document.createElement('span');
+    badge.className = 'done-badge';
+    badge.textContent = '✅';
+    badges.appendChild(badge);
+  } else if (pct < 100 && badge) {
+    badge.remove();
+  }
+}
+
+function refreshFase(fi) {
+  // Refresh todos os itens e sub-elementos
+  DATA[fi].etapas.forEach((etapa, ei) => {
+    etapa.itens.forEach((_, ii) => refreshItem(fi, ei, ii));
+    refreshEtapa(fi, ei);
+  });
+  refreshFaseHeader(fi);
+  updateGlobalProgress();
+  applyFiltro();
+}
+
+function updateGlobalProgress() {
+  const total = totalItems();
+  const done = totalCheckedAll();
+  const pct = Math.round(done / total * 100);
+  document.getElementById('prog-txt').textContent = `${done} de ${total} itens concluídos`;
+  const pctEl = document.getElementById('prog-pct');
+  pctEl.textContent = pct + '%';
+  pctEl.classList.toggle('done', pct === 100);
+  const fill = document.getElementById('prog-fill');
+  fill.style.width = pct + '%';
+  fill.classList.toggle('done', pct === 100);
+}
+
+/* ═══════════════════════════════════════════
+   FILTROS
+═══════════════════════════════════════════ */
+function setFiltro(f, btn) {
+  filtro = f;
+  document.querySelectorAll('.btn-filtro').forEach(b => b.classList.remove('ativo'));
+  btn.classList.add('ativo');
+  applyFiltro();
+}
+
+function applyFiltro() {
+  DATA.forEach((fase, fi) => {
+    const card = document.getElementById(`fase-${fi}`);
+    if (!card) return;
+
+    if (filtro === 'todas') {
+      card.classList.remove('hide');
+      fase.etapas.forEach((etapa, ei) => {
+        const block = document.getElementById(`etapa-${fi}-${ei}`);
+        if (block) block.classList.remove('hide');
+        etapa.itens.forEach((_, ii) => {
+          const row = document.getElementById(`item-${fi}-${ei}-${ii}`);
+          if (row) row.classList.remove('hide');
+        });
+      });
+      return;
+    }
+
+    let faseTemVisivel = false;
+
+    fase.etapas.forEach((etapa, ei) => {
+      const block = document.getElementById(`etapa-${fi}-${ei}`);
+      if (!block) return;
+      let etapaTemVisivel = false;
+
+      etapa.itens.forEach((_, ii) => {
+        const row = document.getElementById(`item-${fi}-${ei}-${ii}`);
+        if (!row) return;
+        const checked = getChecked(fi, ei, ii);
+        const mostrar =
+          (filtro === 'pendentes' && !checked) ||
+          (filtro === 'concluidas' && checked);
+        row.classList.toggle('hide', !mostrar);
+        if (mostrar) etapaTemVisivel = true;
+      });
+
+      block.classList.toggle('hide', !etapaTemVisivel);
+      if (etapaTemVisivel) faseTemVisivel = true;
+    });
+
+    card.classList.toggle('hide', !faseTemVisivel);
+  });
+}
+
+function limparTudo() {
+  if (!confirm('Deseja zerar todo o progresso? Essa ação não pode ser desfeita.')) return;
+  state = {};
+  saveState();
+  renderAll();
+}
+
+/* ═══════════════════════════════════════════
+   INIT
+═══════════════════════════════════════════ */
+loadState();
+renderAll();
+</script>
+</body>
+</html>
