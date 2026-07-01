@@ -32,7 +32,6 @@ async function parseBody(req) {
         if (ct.includes('application/json')) {
           resolve(JSON.parse(raw || '{}'));
         } else {
-          // application/x-www-form-urlencoded (padrão Eduzz)
           const params = new URLSearchParams(raw);
           const obj = {};
           for (const [k, v] of params.entries()) obj[k] = v;
@@ -59,7 +58,7 @@ async function notificar(registro) {
   }
 }
 
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ erro: 'Método não permitido' });
   }
@@ -89,16 +88,13 @@ export default async function handler(req, res) {
       afiliado_email: body.affiliate_email || null,
     };
 
-    // Log capturado pelo Vercel Functions (visível em Project > Logs)
     console.log('[Eduzz] Compra recebida:', JSON.stringify(registro));
 
-    // Encaminha para webhook externo se configurado (Discord, Slack, n8n, Make…)
     await notificar(registro);
 
-    // Eduzz requer HTTP 200 para não reenviar
     return res.status(200).send('OK');
   } catch (err) {
     console.error('[Eduzz] Erro:', err.message);
     return res.status(500).send('Internal Server Error');
   }
-}
+};
