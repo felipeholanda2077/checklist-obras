@@ -59,8 +59,13 @@ async function notificar(registro) {
 }
 
 module.exports = async function handler(req, res) {
+  // GET: validação de endpoint pela Eduzz
+  if (req.method === 'GET') {
+    return res.status(200).send('OK');
+  }
+
   if (req.method !== 'POST') {
-    return res.status(405).json({ erro: 'Método não permitido' });
+    return res.status(405).send('Method Not Allowed');
   }
 
   try {
