@@ -1,0 +1,15 @@
+{
+  "name": "checklist-obras",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev:local": "node server.js",
+    "dev": "vercel dev"
+  },
+  "devDependencies": {
+    "express": "^4.19.2"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5"
+  }
+}
